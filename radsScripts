@@ -1,0 +1,215 @@
+; Set the initial state of the script to active
+isActive := true
+
+; Define the hotkey combination to toggle the script
+^!p:: ; Ctrl + Alt + P
+isActive := !isActive ; Toggle the state
+if (isActive)
+MsgBox Script is now active.
+else
+MsgBox Script is now paused.
+return
+
+; Place your always-on script code here
+
+; Example hotkeys that are only active when the script is active
+#If (isActive)
+
+;--------------------------------------------------------------------------------
+
+; TOGGLE DICTATION
+
+=:: ; = will toggle dictation
+
+WinActivate, PowerScribe
+Send, {F4}
+Return
+
+;--------------------------------------------------------------------------------
+
+; PREVIOUS FIELD
+
+q:: ; q will go to previous field
+
+WinActivate, PowerScribe
+Send, +{Tab}
+Return
+
+;--------------------------------------------------------------------------------
+
+; NEXT FIELD
+
+w:: ; w will got to next field
+
+WinActivate, PowerScribe
+Send, {Tab}
+Return
+
+;--------------------------------------------------------------------------------
+
+; CLEAN TEXT
+
+/*
+This function is supposed to remove double spaces and periods to clean up reports. Unfortunately, it doesn't work as expected. It may not function well with the "insert fields" function. 
+*/
+
+^q:: ; CTRL + q to run this function
+
+WinActivate, PowerScribe
+Send ^h
+Sleep, 100
+Send ..
+Send {tab}
+Send .
+Send {tab} {tab} {tab}
+Send {Enter}{Escape}{Escape}{Escape}
+
+Send ^h
+Sleep, 100
+Send {space}{space}
+Send {tab}
+Send {space}
+Send {tab} {tab} {tab}
+Send {Enter}{Escape}{Escape}
+
+Send ^h
+Sleep, 100
+Send {space}.
+Send {tab}
+Send .
+Send {tab} {tab} {tab}
+Send {Enter}{Escape}{Escape}{Escape}
+return
+
+;--------------------------------------------------------------------------------
+
+; TOGGLE POWERSCRIBE WINDOW
+
+toggle := false
+
+`:: ; ` to toggle minimize/restore. It will always minimize first so sometimes you may need to click twice.
+
+if (toggle := !toggle) {
+WinMinimize, PowerScribe
+} else {
+WinRestore, PowerScribe
+}
+Return
+
+;--------------------------------------------------------------------------------
+
+;TOGGLE HOLDING DOWN LEFT MOUSE BUTTON --> USED IN COMBINATION WITH PACS SCROLL CINE TOOL TO CREATE A POWERSCROLL
+
+/*
+NOTE: My mouse doesn't have infinite scroll, so to use a pseudo infinite scroll, I use the PACS function "Scroll Cine Tool" which requires you to hold the left mouse key down to scroll. The code in Part One makes it so you can left click once and it gets held down and you can move your mouse up and down to simulate POWERSCROLL. To stop this, you click the designated button again. The code in Part Two makes it so that when I click the designated key to stop scrolling, it also switches the mouse off of the "Scroll Cine Tool" to the Selection Tool. I have this mapped to a macro on my mouse as well to simplify it and avoid using the keyboard.
+*/
+
+; Part One
+
+\:: ; uses the \ to hold your click down 
+
+alt := not alt
+if (alt)
+{
+Click Down
+}
+else
+{
+Click Up
+
+; Part Two
+
+;Send {Ctrl Down}{Shift Down}{s Down} ; This is the PACS keyboard shortcut for the "Selection Tool"
+;Sleep, 50
+;Send {Ctrl Up}{Shift Up}{s Up}
+}
+Return
+
+;--------------------------------------------------------------------------------
+
+; AUTODELETE *************** This function will go to the PowerScribe window and delete everything that is there and trigger dictation so you can macro a template.
+^3:: ; Ctrl + 3 activates this function. 
+WinActivate, PowerScribe
+Send ^a
+Send {delete}
+Send {F4}
+Return
+
+;--------------------------------------------------------------------------------
+
+; moves mouse to specific location and clicks --> replaces having to say "CHOOSE 1"
+
+/*
+This function speeds up your selection of pre-recorded options on PowerScribe. Instead of having to say "Choose One" or "Choose Two" and waiting for PowerScribe to pick this up and load it in, this function allows you to press a key to automatically lock into the PowerScribe window, select your prepopulated text, and then return your mouse to the position it was at so you can continue to scroll through images.
+*/
+
+1:: ; 1 will activate this function.
+
+WinActivate, PowerScribe
+MouseGetPos savedX, savedY ; Stores the current mouse position.
+Click 100, 380, 0 ; This may need to be adjusted depending on the screen you have because it specifies the position that needs to be clicked.
+Click 2
+Sleep 100
+SendInput, {Tab}
+SendInput, {Tab}
+SendInput, {Tab}
+Sleep 100
+MouseMove savedX, savedY ; Returns the mouse to where it was before.
+Return
+
+;--------------------------------------------------------------------------------
+
+; moves mouse to specific location and clicks --> replaces having to say "CHOOSE 2"
+
+2:: ; 2 will active this function.
+
+WinActivate, PowerScribe
+MouseGetPos savedX, savedY ; Stores the current mouse position.
+Click 100, 400, 0 ; This may need to be adjusted depending on the screen you have because it specifies the position that needs to be clicked.
+Click 2
+Sleep 100
+SendInput, {Tab}
+SendInput, {Tab}
+SendInput, {Tab}
+Sleep 100
+MouseMove savedX, savedY ; Returns the mouse to where it was before.
+Return
+
+;--------------------------------------------------------------------------------
+
+; moves mouse to specific location and clicks --> replaces having to say "CHOOSE 3"
+
+3:: ; 3 will active this function.
+
+WinActivate, PowerScribe
+MouseGetPos savedX, savedY ; Stores the current mouse position.
+Click 100, 420, 0 ; This may need to be adjusted depending on the screen you have because it specifies the position that needs to be clicked.
+Click 2
+Sleep 100
+SendInput, {Tab}
+SendInput, {Tab}
+SendInput, {Tab}
+Sleep 100
+MouseMove savedX, savedY ; Returns the mouse to where it was before.
+Return
+
+;--------------------------------------------------------------------------------
+
+; AUTO SELECT STACK
+
+/* 
+This function is not working currently. The goal is to be able to auto click stack when you load an exam so you can scroll through all the images
+*/
+
+/*
+^6:: ; Ctrl + 6 triggers this function
+WinActivate, Centricity
+Click 1800, -70, 0
+Sleep 400
+Click 1800, -30, "Left"
+Return
+*/
+
+
+
+#If
